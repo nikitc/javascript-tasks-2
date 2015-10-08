@@ -1,6 +1,6 @@
 'use strict';
 
-var phoneBook = require('./phoneBook');
+var phoneBook = require('./phone-book');
 
 // Добавляем записи
 phoneBook.add('Сергей', '7 999 6667778', 'gs@example.com');
@@ -31,5 +31,5 @@ phoneBook.showTable();
 
 
 // Экспортируем записи, пример файла рядом
-phoneBook.export('./backup.csv');
+phoneBook.importFromCsv('./backup.csv');
 // Добавлено 4 контакта
