@@ -7,23 +7,18 @@ var phoneBook = new Array();// Здесь вы храните записи ка�
 */
 function isValidPhone (phone) {
     phone = phone.replace(/(\s|\+|\(|\)|\-)/g,'');
-    var re = /\\w/g;
-    return (phone.search(re) == -1 || phone.length < 10);
+    var re = /\d+/g;
+    return (phone.search(re) != -1 && phone.length == 11);
 }
 
 function isValidEmail (email) {
-    var re = /(.+?@.+?\.\w)/g;
+    var re = /((\d|\w)@(\w|-).\w)/g;
     return (email.search(re) != -1);
 }
 
 function parsePhone (phone) {
     phone = phone.replace(/(\s|\+|\(|\)|\-)/g,'');
-    if (phone.length == 10) {
-        return ('+7' + phone);
-    }
-    else {
-        return ('+' + phone);
-    }
+    return (phone);
 }
 
 function computionCountSpaces (word, lengthTable) {
@@ -35,8 +30,8 @@ function computionCountSpaces (word, lengthTable) {
 }
 
 function parsePhoneToFind (phone) {
-    return (phone.substring(0,2) + ' (' + phone.substring(2,5) + ') '
-            + phone.substring(5,8) + '-' + phone.charAt(8) + '-' + phone.substring(9,12))
+    return ('+' + phone.substring(0,1) + ' (' + phone.substring(1,4) + ') '
+            + phone.substring(4,7) + '-' + phone.charAt(7) + '-' + phone.substring(8,11))
 }
 
 function pushClient (name, phone, email) {
@@ -70,6 +65,12 @@ function parseNumber (number) {
     }
 }
 
+function checkAndPrint (client, query, item) {
+    if (item.indexOf(query) != -1) {
+        console.log(client.name + ' ' + parsePhoneToFind(client.phone) + ' ' + client.email);
+    }
+}
+
 module.exports.add = function add (name, phone, email) {
         pushClient(name, phone, email)
     // Ваша невероятная магия здесь
@@ -81,15 +82,9 @@ module.exports.add = function add (name, phone, email) {
 */
 module.exports.find = function find (query) {
     phoneBook.forEach(function(client) { 
-        if (client.name.indexOf(query) != -1) {
-            console.log(client.name + ' ' + parsePhoneToFind(client.phone) + ' ' + client.email)
-        }
-        if (isValidPhone(query) && client.phone.indexOf(query) != -1) {
-            console.log(client.name + ' ' + parsePhoneToFind(client.phone) + ' ' + client.email)
-        }
-        if (isValidPhone(query) && client.email.indexOf(query) != -1) {
-            console.log(client.name + ' ' + parsePhoneToFind(client.phone) + ' ' + client.email)
-        }
+        checkAndPrint(client, query, client.name);
+        checkAndPrint(client, query, client.phone);
+        checkAndPrint(client, query, client.email);
     });  
     // Ваша удивительная магия здесь
 }
