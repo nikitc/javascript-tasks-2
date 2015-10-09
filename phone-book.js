@@ -34,7 +34,8 @@ function computionCountSpaces (word, lengthTable) {
 
 function parsePhoneToFind (phone) {
     return ('+' + phone.substring(0,1) + ' (' + phone.substring(1,4) + ') '
-            + phone.substring(4,7) + '-' + phone.charAt(7) + '-' + phone.substring(8,phone.length))
+            + phone.substring(4,7) + '-' + phone.charAt(7) + '-' +
+            phone.substring(8,phone.length))
 }
 
 function pushClient (name, phone, email) {
