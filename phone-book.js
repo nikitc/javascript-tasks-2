@@ -6,9 +6,9 @@ var phoneBook = new Array();// Здесь вы храните записи ка�
    На вход может прийти что угодно, будьте осторожны.
 */
 function isValidPhone (phone) {
-    phone = phone.replace(/(\s|\+|\(|\)|\-)/g,'');
-    var re = /\d+/g;
-    return (phone.search(re) != -1 && phone.length == 11);
+    phone = phone.replace(/(\s|\(|\)|\-)/g,'');
+    var re = /^(\+|[0-9])\d+/g;
+    return (phone.search(re) != -1 && phone.length >= 10);
 }
 
 function isValidEmail (email) {
@@ -18,6 +18,9 @@ function isValidEmail (email) {
 
 function parsePhone (phone) {
     phone = phone.replace(/(\s|\+|\(|\)|\-)/g,'');
+    if (phone.length == 10) {
+        phone = '7' + phone;
+    }
     return (phone);
 }
 
@@ -31,7 +34,7 @@ function computionCountSpaces (word, lengthTable) {
 
 function parsePhoneToFind (phone) {
     return ('+' + phone.substring(0,1) + ' (' + phone.substring(1,4) + ') '
-            + phone.substring(4,7) + '-' + phone.charAt(7) + '-' + phone.substring(8,11))
+            + phone.substring(4,7) + '-' + phone.charAt(7) + '-' + phone.substring(8,phone.length))
 }
 
 function pushClient (name, phone, email) {
