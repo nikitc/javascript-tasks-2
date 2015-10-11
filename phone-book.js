@@ -7,18 +7,18 @@ var phoneBook = new Array();// Здесь вы храните записи ка�
 */
 function isValidPhone (phone) {
     phone = phone.replace(/(\s|\(|\)|\-)/g,'');
-    var re = /^(\+|[0-9])\d+/g;
-    return (phone.search(re) != -1 && phone.length >= 10);
+    var re = /^(\+|[0-9])\d{9,}/g;
+    return (re.test(phone) && phone.length >= 10);
 }
 
 function isValidEmail (email) {
-    var re = /((\d|\w)@(\w|-).\w)/g;
-    return (email.search(re) != -1);
+    var re = /((\d|\w)+@(\w+|-).\w)/g;
+    return (re.test(email));
 }
 
-function parsePhone (phone) {
+function parsePhoneNumber (phone) {
     phone = phone.replace(/(\s|\+|\(|\)|\-)/g,'');
-    if (phone.length == 10) {
+    if (phone.length === 10) {
         phone = '7' + phone;
     }
     return (phone);
@@ -40,7 +40,7 @@ function parsePhoneToFind (phone) {
 
 function pushClient (name, phone, email) {
     if (isValidEmail(email) && isValidPhone(phone)) {
-        phone = parsePhone(phone);
+        phone = parsePhoneNumber(phone);
         phoneBook.push({
             name : name,
             phone : phone,
@@ -49,7 +49,7 @@ function pushClient (name, phone, email) {
     }
 }
 
-function parseNumber (number) {
+function pluralizeContactsNumber (number) {
     number %= 100;
 
     if (number > 4 && number < 21) {
@@ -57,7 +57,7 @@ function parseNumber (number) {
     }
     else {
         number %= 10;
-        if (number == 1) {
+        if (number === 1) {
             return ('Удален ' + number + ' контакт');
         }
         if (number > 1 && number < 5) {
@@ -70,7 +70,7 @@ function parseNumber (number) {
 }
 
 function checkAndPrint (client, query, item) {
-    if (item.indexOf(query) != -1) {
+    if (item.indexOf(query) !== -1) {
         console.log(client.name + ' ' + parsePhoneToFind(client.phone) + ' ' + client.email);
     }
 }
@@ -99,20 +99,23 @@ module.exports.find = function find (query) {
 module.exports.remove = function remove (query) {
     var counter = 0;
     phoneBook.forEach(function(client) {
-        if (client.name.indexOf(query) != -1) {
+        var checkPhone = isValidPhone(query); 
+        if (client.name.indexOf(query) !== -1) {
             counter++;
             delete phoneBook[client];
+            return;
         }
-        if (isValidPhone(query) && client.phone.indexOf(query) != -1) {
+        if (checkPhone && client.phone.indexOf(query) !== -1) {
             counter++;
             delete phoneBook[client];
+            return;
         }
-        if (isValidPhone(query) && client.email.indexOf(query) != -1){
+        if (checkPhone && client.email.indexOf(query) !== -1){
             counter++;
             delete phoneBook[client];
         }
     });   
-    console.log(parseNumber(counter));
+    console.log(pluralizeContactsNumber(counter));
     // Ваша необьяснимая магия здесь
 }
 
@@ -124,7 +127,7 @@ module.exports.importFromCsv = function importFromCsv (filename) {
     var newClient;
     var importBook = data.split('\n');
     importBook.forEach(function(client) {
-        if (client.search(';') != -1) {
+        if (client.search(';') !== -1) {
             newClient = client.split(';');
                 pushClient(newClient[0], newClient[1], newClient[2])  
         }
@@ -149,5 +152,4 @@ module.exports.showTable = function showTable () {
         console.log(name + phone + email);
     });
     console.log('└─────────────┴────────────────────╨──────────────────────┘')
-    // Ваша чёрная магия здесь
-};
+}
