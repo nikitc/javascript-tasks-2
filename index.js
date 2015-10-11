@@ -1,6 +1,6 @@
 'use strict';
 
-var phoneBook = require('./phone-book');
+var phoneBook = require('./phoneBook');
 
 // Добавляем записи
 phoneBook.add('Сергей', '7 999 6667778', 'gs@example.com');
