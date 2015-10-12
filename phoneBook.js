@@ -69,12 +69,6 @@ function pluralizeContactsNumber (number) {
     }
 }
 
-function checkAndPrint (client, query, item) {
-    if (item.indexOf(query) !== -1) {
-        console.log(client.name + ' ' + parsePhoneToFind(client.phone) + ' ' + client.email);
-    }
-}
-
 module.exports.add = function add (name, phone, email) {
         pushClient(name, phone, email)
     // Ваша невероятная магия здесь
@@ -86,9 +80,12 @@ module.exports.add = function add (name, phone, email) {
 */
 module.exports.find = function find (query) {
     phoneBook.forEach(function(client) { 
-        checkAndPrint(client, query, client.name);
-        checkAndPrint(client, query, client.phone);
-        checkAndPrint(client, query, client.email);
+        for (var field in client) {
+            if (client[field].indexOf(query) !== -1) {
+                console.log(client.name + ' ' + parsePhoneToFind(client.phone) + ' ' + client.email);
+                return;
+        }
+    }
     });  
     // Ваша удивительная магия здесь
 }
