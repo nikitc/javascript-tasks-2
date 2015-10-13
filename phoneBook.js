@@ -21,10 +21,10 @@ function parsePhoneNumber (phone) {
     return phone;
 }
 
-function computionCountSpaces (word, lengthTable) {
+function addLeadingSymbols (word, lengthTable, symbol) {
     var countSpaces = lengthTable - word.length;
-    for (var symbol = 0; symbol < countSpaces; symbol++) {
-        word += ' ';
+    for (var symbolNumber = 0; symbolNumber < countSpaces; symbolNumber++) {
+        word += symbol;
     }
     return word;
 }
@@ -131,15 +131,31 @@ module.exports.importFromCsv = function importFromCsv (filename) {
    Функция вывода всех телефонов в виде ASCII (задача со звёздочкой!).
 */
 module.exports.showTable = function showTable () {
-     var name, phone, email;
-     console.log('┌─────────────┬────────────────────╥──────────────────────┐');
-     console.log('│ Имя         │ Телефон            ║ email                │');
-     console.log('├─────────────┼────────────────────╫──────────────────────┤');
-     phoneBook.forEach(function(client) {
-        name = '│' + computionCountSpaces(client.name, 13);
-        phone = '│' + computionCountSpaces(parsePhoneToFind(client.phone), 20);
-        email = '║' + computionCountSpaces(client.email, 22) + '│';
+    var name, phone, email;
+    var tableTopLineColumn1 = '┌' + addLeadingSymbols('─', 13, '─');
+    var tableTopLineColumn2 = '┬' + addLeadingSymbols('─', 20, '─');
+    var tableTopLineColumn3 = '╥' + addLeadingSymbols('─', 22, '─') + '┐';
+    console.log(tableTopLineColumn1 + tableTopLineColumn2 + tableTopLineColumn3);
+
+    var tableTextColumn1 = '│' + addLeadingSymbols(' Имя', 13, ' ');
+    var tableTextColumn2 = '│' + addLeadingSymbols(' Телефон', 20, ' ');
+    var tableTextColumn3 = '║' + addLeadingSymbols(' email', 22, ' ') + '│';
+    console.log(tableTextColumn1 + tableTextColumn2 + tableTextColumn3);
+
+    var tableDownLineColumn1 = '├' + addLeadingSymbols('─', 13, '─');
+    var tableDownLineColumn2 = '┼' + addLeadingSymbols('─', 20, '─');
+    var tableDownLineColumn3 = '╫' + addLeadingSymbols('─', 22, '─') + '┤';
+    console.log(tableDownLineColumn1 + tableDownLineColumn2 + tableDownLineColumn3);
+
+    phoneBook.forEach(function(client) {
+        name = '│' + addLeadingSymbols(client.name, 13, ' ');
+        phone = '│' + addLeadingSymbols(parsePhoneToFind(client.phone), 20, ' ');
+        email = '║' + addLeadingSymbols(client.email, 22, ' ') + '│';
         console.log(name + phone + email);
     });
-    console.log('└─────────────┴────────────────────╨──────────────────────┘')
+
+    var tableFooterLineColumn1 = '└' + addLeadingSymbols('─', 13, '─');
+    var tableFooterLineColumn2 = '┴' + addLeadingSymbols('─', 20, '─');
+    var tableFooterLineColumn3 = '╨' + addLeadingSymbols('─', 22, '─') + '┘';
+    console.log(tableFooterLineColumn1 + tableFooterLineColumn2 + tableFooterLineColumn3);
 }
