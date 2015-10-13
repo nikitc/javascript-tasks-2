@@ -119,7 +119,7 @@ module.exports.importFromCsv = function importFromCsv (filename) {
     importBook.forEach(function(client) {
         if (client.search(';') !== -1) {
             newClient = client.split(';');
-                pushClient(newClient[0], newClient[1], newClient[2])  
+                pushClient(newClient[0], newClient[1], newClient[2])
         }
     });
     // Ваша чёрная магия:
