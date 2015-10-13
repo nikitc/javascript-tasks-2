@@ -8,20 +8,17 @@ var phoneBook = new Array();// Здесь вы храните записи ка�
 function isValidPhone (phone) {
     phone = phone.replace(/(\s|\(|\)|\-)/g,'');
     var re = /^(\+|[0-9])\d{9,}/g;
-    return (re.test(phone) && phone.length >= 10);
+    return re.test(phone) && phone.length >= 10;
 }
 
 function isValidEmail (email) {
     var re = /((\d|\w)+@(\w+|-).\w)/g;
-    return (re.test(email));
+    return re.test(email);
 }
 
 function parsePhoneNumber (phone) {
     phone = phone.replace(/(\s|\+|\(|\)|\-)/g,'');
-    if (phone.length === 10) {
-        phone = '7' + phone;
-    }
-    return (phone);
+    return phone;
 }
 
 function computionCountSpaces (word, lengthTable) {
@@ -68,7 +65,14 @@ function pluralizeContactsNumber (number) {
         }
     }
 }
+function isClientFoundByQuery (client, query) {
+    var checkPhone = isValidPhone(query);
+    var checkNameInQuery = client.name.indexOf(query) !== -1;
+    var checkPhoneInQuery = client.phone.indexOf(query) !== -1;
+    var checkEmailInQuery = client.email.indexOf(query) !== -1;
+    return (checkNameInQuery || (checkPhone && (checkEmailInQuery || checkPhoneInQuery)));    
 
+}
 module.exports.add = function add (name, phone, email) {
         pushClient(name, phone, email)
     // Ваша невероятная магия здесь
@@ -96,20 +100,9 @@ module.exports.find = function find (query) {
 module.exports.remove = function remove (query) {
     var counter = 0;
     phoneBook.forEach(function(client) {
-        var checkPhone = isValidPhone(query); 
-        if (client.name.indexOf(query) !== -1) {
+        if (isClientFoundByQuery(client, query)) {
             counter++;
-            delete phoneBook[client];
-            return;
-        }
-        if (checkPhone && client.phone.indexOf(query) !== -1) {
-            counter++;
-            delete phoneBook[client];
-            return;
-        }
-        if (checkPhone && client.email.indexOf(query) !== -1){
-            counter++;
-            delete phoneBook[client];
+            delete phoneBook[client]
         }
     });   
     console.log(pluralizeContactsNumber(counter));
