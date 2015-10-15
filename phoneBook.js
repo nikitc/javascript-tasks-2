@@ -21,12 +21,12 @@ function parsePhoneNumber (phone) {
     return phone;
 }
 
-function addLeadingSymbols (word, lengthTable, symbol) {
+function addLeadingSymbols (firstSymbol, word, lengthTable, symbol) {
     var countSpaces = lengthTable - word.length;
     for (var symbolNumber = 0; symbolNumber < countSpaces; symbolNumber++) {
         word += symbol;
     }
-    return word;
+    return firstSymbol + word;
 }
 
 function parsePhoneToFind (phone) {
@@ -131,31 +131,37 @@ module.exports.importFromCsv = function importFromCsv (filename) {
    Функция вывода всех телефонов в виде ASCII (задача со звёздочкой!).
 */
 module.exports.showTable = function showTable () {
-    var name, phone, email;
-    var tableTopLineColumn1 = '┌' + addLeadingSymbols('─', 13, '─');
-    var tableTopLineColumn2 = '┬' + addLeadingSymbols('─', 20, '─');
-    var tableTopLineColumn3 = '╥' + addLeadingSymbols('─', 22, '─') + '┐';
-    console.log(tableTopLineColumn1 + tableTopLineColumn2 + tableTopLineColumn3);
+    var bindAddLeadingSymbols = function(firstSymbol, length) { 
+        return addLeadingSymbols(firstSymbol, '─', length, '─');
+    }
+    console.log(bindAddLeadingSymbols('┌', 13) + bindAddLeadingSymbols('┬', 20)
+                + bindAddLeadingSymbols('╥', 22) + '┐');
 
-    var tableTextColumn1 = '│' + addLeadingSymbols(' Имя', 13, ' ');
-    var tableTextColumn2 = '│' + addLeadingSymbols(' Телефон', 20, ' ');
-    var tableTextColumn3 = '║' + addLeadingSymbols(' email', 22, ' ') + '│';
-    console.log(tableTextColumn1 + tableTextColumn2 + tableTextColumn3);
+    bindAddLeadingSymbols = function(firstSymbol, text, length) { 
+        return addLeadingSymbols(firstSymbol, text, length, ' ');
+    }    
+    console.log(bindAddLeadingSymbols('│',' Имя', 13) +
+                bindAddLeadingSymbols('│', ' Телефон', 20) + 
+                bindAddLeadingSymbols('║', ' email', 22) + '│');
 
-    var tableDownLineColumn1 = '├' + addLeadingSymbols('─', 13, '─');
-    var tableDownLineColumn2 = '┼' + addLeadingSymbols('─', 20, '─');
-    var tableDownLineColumn3 = '╫' + addLeadingSymbols('─', 22, '─') + '┤';
-    console.log(tableDownLineColumn1 + tableDownLineColumn2 + tableDownLineColumn3);
+    bindAddLeadingSymbols = function(firstSymbol, length) { 
+        return addLeadingSymbols(firstSymbol, '─', length, '─');
+    }
+    console.log(bindAddLeadingSymbols('├', 13) + bindAddLeadingSymbols('┼', 20)
+                + bindAddLeadingSymbols('╫', 22) + '┤');
 
+    bindAddLeadingSymbols = function(firstSymbol, text, length) { 
+        return addLeadingSymbols(firstSymbol, text, length, ' ');
+    }  
     phoneBook.forEach(function(client) {
-        name = '│' + addLeadingSymbols(client.name, 13, ' ');
-        phone = '│' + addLeadingSymbols(parsePhoneToFind(client.phone), 20, ' ');
-        email = '║' + addLeadingSymbols(client.email, 22, ' ') + '│';
-        console.log(name + phone + email);
+        console.log(bindAddLeadingSymbols('│', client.name, 13) +
+                bindAddLeadingSymbols('│', parsePhoneToFind(client.phone), 20) + 
+                bindAddLeadingSymbols('║', client.email, 22) + '│');
     });
-
-    var tableFooterLineColumn1 = '└' + addLeadingSymbols('─', 13, '─');
-    var tableFooterLineColumn2 = '┴' + addLeadingSymbols('─', 20, '─');
-    var tableFooterLineColumn3 = '╨' + addLeadingSymbols('─', 22, '─') + '┘';
-    console.log(tableFooterLineColumn1 + tableFooterLineColumn2 + tableFooterLineColumn3);
+    
+    bindAddLeadingSymbols = function(firstSymbol, length) { 
+        return addLeadingSymbols(firstSymbol, '─', length, '─');
+    }
+    console.log(bindAddLeadingSymbols('└', 13) + bindAddLeadingSymbols('┴', 20)
+                + bindAddLeadingSymbols('╨', 22) + '┘');
 }
