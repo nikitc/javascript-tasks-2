@@ -8,17 +8,16 @@ var phoneBook = new Array();// Здесь вы храните записи ка�
 function isValidPhone (phone) {
     phone = phone.replace(/(\s|\(|\)|\-)/g,'');
     var re = /^(\+|[0-9])\d{9,}/g;
-    return re.test(phone) && phone.length >= 10;
+    return re.test(phone);
 }
 
 function isValidEmail (email) {
-    var re = /((\d|\w)+@(\w+|-).\w)/g;
+    var re = /((\d|\w)+@\w(\w{2,}|-)\w.\w{2,})/g;
     return re.test(email);
 }
 
 function parsePhoneNumber (phone) {
-    phone = phone.replace(/(\s|\+|\(|\)|\-)/g,'');
-    return phone;
+    return phone.replace(/(\s|\+|\(|\)|\-)/g,'');
 }
 
 function addLeadingSymbols (firstSymbol, word, lengthTable, symbol) {
@@ -41,7 +40,7 @@ function pushClient (name, phone, email) {
         phoneBook.push({
             name : name,
             phone : phone,
-            email : email    
+            email : email
         });
     }
 }
@@ -70,7 +69,7 @@ function isClientFoundByQuery (client, query) {
     var checkNameInQuery = client.name.indexOf(query) !== -1;
     var checkPhoneInQuery = client.phone.indexOf(query) !== -1;
     var checkEmailInQuery = client.email.indexOf(query) !== -1;
-    return (checkNameInQuery || (checkPhone && (checkEmailInQuery || checkPhoneInQuery)));    
+    return (checkNameInQuery || (checkPhone && (checkEmailInQuery || checkPhoneInQuery)));
 
 }
 module.exports.add = function add (name, phone, email) {
@@ -83,14 +82,14 @@ module.exports.add = function add (name, phone, email) {
    Поиск ведется по всем полям.
 */
 module.exports.find = function find (query) {
-    phoneBook.forEach(function(client) { 
+    phoneBook.forEach(function(client) {
         for (var field in client) {
             if (client[field].indexOf(query) !== -1) {
                 console.log(client.name + ' ' + parsePhoneToFind(client.phone) + ' ' + client.email);
                 return;
         }
     }
-    });  
+    });
     // Ваша удивительная магия здесь
 }
 
@@ -104,7 +103,7 @@ module.exports.remove = function remove (query) {
             counter++;
             delete phoneBook[client]
         }
-    });   
+    });
     console.log(pluralizeContactsNumber(counter));
     // Ваша необьяснимая магия здесь
 }
@@ -114,12 +113,11 @@ module.exports.remove = function remove (query) {
 */
 module.exports.importFromCsv = function importFromCsv (filename) {
     var data = require('fs').readFileSync(filename, 'utf-8');
-    var newClient;
-    var importBook = data.split('\n');
-    importBook.forEach(function(client) {
+    var fileLines = data.split('\n');
+    fileLines.forEach(function(client) {
         if (client.search(';') !== -1) {
-            newClient = client.split(';');
-                pushClient(newClient[0], newClient[1], newClient[2])
+            var newClient = client.split(';');
+            pushClient(newClient[0], newClient[1], newClient[2])
         }
     });
     // Ваша чёрная магия:
@@ -131,37 +129,37 @@ module.exports.importFromCsv = function importFromCsv (filename) {
    Функция вывода всех телефонов в виде ASCII (задача со звёздочкой!).
 */
 module.exports.showTable = function showTable () {
-    var bindAddLeadingSymbols = function(firstSymbol, length) { 
+    var addTopLine = function(firstSymbol, length) {
         return addLeadingSymbols(firstSymbol, '─', length, '─');
     }
-    console.log(bindAddLeadingSymbols('┌', 13) + bindAddLeadingSymbols('┬', 20)
-                + bindAddLeadingSymbols('╥', 22) + '┐');
+    console.log(addTopLine('┌', 13) + addTopLine('┬', 20)
+                + addTopLine('╥', 22) + '┐');
 
-    bindAddLeadingSymbols = function(firstSymbol, text, length) { 
+    var addColumnNames = function(firstSymbol, text, length) {
         return addLeadingSymbols(firstSymbol, text, length, ' ');
-    }    
-    console.log(bindAddLeadingSymbols('│',' Имя', 13) +
-                bindAddLeadingSymbols('│', ' Телефон', 20) + 
-                bindAddLeadingSymbols('║', ' email', 22) + '│');
+    }
+    console.log(addColumnNames('│',' Имя', 13) +
+                addColumnNames('│', ' Телефон', 20) +
+                addColumnNames('║', ' email', 22) + '│');
 
-    bindAddLeadingSymbols = function(firstSymbol, length) { 
+    var addBottomLine = function(firstSymbol, length) {
         return addLeadingSymbols(firstSymbol, '─', length, '─');
     }
-    console.log(bindAddLeadingSymbols('├', 13) + bindAddLeadingSymbols('┼', 20)
-                + bindAddLeadingSymbols('╫', 22) + '┤');
+    console.log(addBottomLine('├', 13) + addBottomLine('┼', 20)
+                + addBottomLine('╫', 22) + '┤');
 
-    bindAddLeadingSymbols = function(firstSymbol, text, length) { 
+    var addClient = function(firstSymbol, text, length) {
         return addLeadingSymbols(firstSymbol, text, length, ' ');
-    }  
+    }
     phoneBook.forEach(function(client) {
-        console.log(bindAddLeadingSymbols('│', client.name, 13) +
-                bindAddLeadingSymbols('│', parsePhoneToFind(client.phone), 20) + 
-                bindAddLeadingSymbols('║', client.email, 22) + '│');
+        console.log(addClient('│', client.name, 13) +
+                addClient('│', parsePhoneToFind(client.phone), 20) +
+                addClient('║', client.email, 22) + '│');
     });
-    
-    bindAddLeadingSymbols = function(firstSymbol, length) { 
+
+    var addFooterLine = function(firstSymbol, length) {
         return addLeadingSymbols(firstSymbol, '─', length, '─');
     }
-    console.log(bindAddLeadingSymbols('└', 13) + bindAddLeadingSymbols('┴', 20)
-                + bindAddLeadingSymbols('╨', 22) + '┘');
+    console.log(addFooterLine('└', 13) + addFooterLine('┴', 20)
+                + addFooterLine('╨', 22) + '┘');
 }
