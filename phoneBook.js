@@ -29,9 +29,9 @@ function addLeadingSymbols (firstSymbol, word, lengthTable, symbol) {
 }
 
 function parsePhoneToFind (phone) {
-    return (phone.substring(0,1) + ' (' + phone.substring(1,4) + ') '
-            + phone.substring(4,7) + '-' + phone.charAt(7) + '-' +
-            phone.substring(8,phone.length))
+    return (phone.substring(0, 1) + ' (' + phone.substring(1, 4) + ') '
+            + phone.substring(4, 7) + '-' + phone.substring(7, 8) + '-' +
+            phone.substring(8, phone.length))
 }
 
 function pushClient (name, phone, email) {
@@ -45,28 +45,22 @@ function pushClient (name, phone, email) {
     }
 }
 
-function addEndingWords (firstEnd, secondEnd, number) {
-    return (('Удален%n ' + number + ' контакт%s').replace('%s', firstEnd).replace('%n', secondEnd));
-}
 function pluralizeContactsNumber (number) {
     number %= 100;
-    var addWithNumber = function(firstEnd, secondEnd) {
-        return addEndingWords(firstEnd, secondEnd, number);
-    }
 
     if (number > 4 && number < 21) {
-        return addWithNumber('о', 'ов');
+        return (('Удален%n ' + number + ' контакт%s').replace('%s', 'о').replace('%n', 'ов'));
     }
     else {
         number %= 10;
         if (number === 1) {
-            return addWithNumber('', '');
+            return (('Удален%n ' + number + ' контакт%s').replace('%s', '').replace('%n', ''));
         }
         if (number > 1 && number < 5) {
-            return addWithNumber('о', 'а');
+            return (('Удален%n ' + number + ' контакт%s').replace('%s', 'о').replace('%n', 'а'));
         }
         else {
-            return addWithNumber('о', 'ов');
+            return (('Удален%n ' + number + ' контакт%s').replace('%s', 'о').replace('%n', 'ов'));
         }
     }
 }
@@ -76,7 +70,7 @@ function isClientFoundByQuery (client, query) {
     var checkNameInQuery = client.name.indexOf(query) !== -1;
     var checkPhoneInQuery = client.phone.indexOf(query) !== -1;
     var checkEmailInQuery = client.email.indexOf(query) !== -1;
-    return (checkNameInQuery || (checkPhone && (checkEmailInQuery || checkPhoneInQuery)));
+    return checkNameInQuery || checkPhone && (checkEmailInQuery || checkPhoneInQuery);
 
 }
 module.exports.add = function add (name, phone, email) {
