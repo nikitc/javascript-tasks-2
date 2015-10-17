@@ -6,18 +6,18 @@ var phoneBook = new Array();// Здесь вы храните записи ка�
    На вход может прийти что угодно, будьте осторожны.
 */
 function isValidPhone (phone) {
-    phone = phone.replace(/(\s|\(|\)|\-)/g,'');
+    phone = parsePhoneNumber(phone);
     var re = /^(\+|[0-9])\d{9,}/g;
     return re.test(phone);
 }
 
 function isValidEmail (email) {
-    var re = /((\d|\w)+@\w(\w{2,}|-)\w.\w{2,})/g;
+    var re = /((\d|\w)+@\w(\w{1,}|-)*\w.\w{2,})/g;
     return re.test(email);
 }
 
 function parsePhoneNumber (phone) {
-    return phone.replace(/(\s|\+|\(|\)|\-)/g,'');
+    return phone.replace(/(\s|\(|\)|\-)/g,'');
 }
 
 function addLeadingSymbols (firstSymbol, word, lengthTable, symbol) {
@@ -29,7 +29,7 @@ function addLeadingSymbols (firstSymbol, word, lengthTable, symbol) {
 }
 
 function parsePhoneToFind (phone) {
-    return ('+' + phone.substring(0,1) + ' (' + phone.substring(1,4) + ') '
+    return (phone.substring(0,1) + ' (' + phone.substring(1,4) + ') '
             + phone.substring(4,7) + '-' + phone.charAt(7) + '-' +
             phone.substring(8,phone.length))
 }
@@ -45,25 +45,32 @@ function pushClient (name, phone, email) {
     }
 }
 
+function addEndingWords (firstEnd, secondEnd, number) {
+    return (('Удален%n ' + number + ' контакт%s').replace('%s', firstEnd).replace('%n', secondEnd));
+}
 function pluralizeContactsNumber (number) {
     number %= 100;
+    var addWithNumber = function(firstEnd, secondEnd) {
+        return addEndingWords(firstEnd, secondEnd, number);
+    }
 
     if (number > 4 && number < 21) {
-        return ('Удалено ' + number + ' контактов');
+        return addWithNumber('о', 'ов');
     }
     else {
         number %= 10;
         if (number === 1) {
-            return ('Удален ' + number + ' контакт');
+            return addWithNumber('', '');
         }
         if (number > 1 && number < 5) {
-            return ('Удалено ' + number + ' контакта');
+            return addWithNumber('о', 'а');
         }
         else {
-            return ('Удалено ' + number + ' контактов');
+            return addWithNumber('о', 'ов');
         }
     }
 }
+
 function isClientFoundByQuery (client, query) {
     var checkPhone = isValidPhone(query);
     var checkNameInQuery = client.name.indexOf(query) !== -1;
